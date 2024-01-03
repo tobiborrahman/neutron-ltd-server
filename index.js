@@ -6,6 +6,7 @@ const cors = require('cors');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
 
+// middleware fot cors options
 const corsOptions = {
 	origin: '*',
 	credentials: true,
@@ -29,24 +30,36 @@ async function run() {
 	try {
 		// await client.connect();
 
+		// Contact collection
 		const contactsCollection = client
 			.db('neutron-ltd')
 			.collection('contacts');
+
+		// Favorite collection
 		const favoriteContactsCollection = client
 			.db('neutron-ltd')
 			.collection('favorites');
 
+		// For getting all the contacts
 		app.get('/contacts', async (req, res) => {
 			const result = await contactsCollection.find().toArray();
 			res.send(result);
 		});
 
+		// For adding the contacts to the collection
 		app.post('/contacts', async (req, res) => {
 			const addedContacts = req.body;
 			const result = await contactsCollection.insertOne(addedContacts);
 			res.send(result);
 		});
 
+		// For getting the favorite contacts
+		app.get('/favorites', async (req, res) => {
+			const result = await favoriteContactsCollection.find().toArray();
+			res.send(result);
+		});
+
+		// For adding specific contact to favorites
 		app.post('/favorites/:id', async (req, res) => {
 			const addedContacts = req.body;
 			const result = await favoriteContactsCollection.insertOne(
@@ -54,11 +67,8 @@ async function run() {
 			);
 			res.send(result);
 		});
-		app.get('/favorites', async (req, res) => {
-			const result = await favoriteContactsCollection.find().toArray();
-			res.send(result);
-		});
 
+		// For updating the contact details
 		app.put('/contacts/:id', async (req, res) => {
 			const id = req.params.id;
 			console.log(id);
@@ -83,6 +93,7 @@ async function run() {
 			res.send(result);
 		});
 
+		// Delete a specific contact
 		app.delete('/contacts/:id', async (req, res) => {
 			const id = req.params.id;
 			const query = { _id: new ObjectId(id) };

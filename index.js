@@ -46,8 +46,8 @@ async function run() {
 
 		app.put('/contacts/:id', async (req, res) => {
 			const id = req.params.id;
+			console.log(id);
 			const contacts = req.body;
-			console.log(updatedContacts);
 			const filter = { _id: new ObjectId(id) };
 			options = { upsert: true };
 			const updatedDoc = {
@@ -59,6 +59,7 @@ async function run() {
 					image: contacts.image,
 				},
 			};
+			console.log(updatedDoc);
 			const result = await contactsCollection.updateOne(
 				filter,
 				updatedDoc,

@@ -32,6 +32,9 @@ async function run() {
 		const contactsCollection = client
 			.db('neutron-ltd')
 			.collection('contacts');
+		const favoriteContactsCollection = client
+			.db('neutron-ltd')
+			.collection('favorites');
 
 		app.get('/contacts', async (req, res) => {
 			const result = await contactsCollection.find().toArray();
@@ -41,6 +44,18 @@ async function run() {
 		app.post('/contacts', async (req, res) => {
 			const addedContacts = req.body;
 			const result = await contactsCollection.insertOne(addedContacts);
+			res.send(result);
+		});
+
+		app.post('/favorites/:id', async (req, res) => {
+			const addedContacts = req.body;
+			const result = await favoriteContactsCollection.insertOne(
+				addedContacts
+			);
+			res.send(result);
+		});
+		app.get('/favorites', async (req, res) => {
+			const result = await favoriteContactsCollection.find().toArray();
 			res.send(result);
 		});
 
